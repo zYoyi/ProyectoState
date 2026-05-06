@@ -1,0 +1,108 @@
+classDiagram
+direction LR
+
+class AireAcondicionado {
+  +EstadoAC estadoActual
+  +number temperaturaActual
+  +number temperaturaObjetivo
+  +boolean sensorConFalla
+  +encender()
+  +apagar()
+  +detectarTemperatura()
+  +enfriar()
+  +ventilar()
+  +activarSleep()
+  +activarAhorroEnergia()
+  +manejarError()
+  +mantenimiento()
+  +reiniciar()
+  +simular()
+  +cambiarEstado(EstadoAC nuevoEstado)
+  +crearEstado(NombreEstado nombre) EstadoAC
+}
+
+class EstadoAC {
+  <<interface>>
+  +encender(AireAcondicionado ac)
+  +apagar(AireAcondicionado ac)
+  +detectarTemperatura(AireAcondicionado ac)
+  +enfriar(AireAcondicionado ac)
+  +ventilar(AireAcondicionado ac)
+  +activarSleep(AireAcondicionado ac)
+  +activarAhorroEnergia(AireAcondicionado ac)
+  +manejarError(AireAcondicionado ac)
+  +mantenimiento(AireAcondicionado ac)
+  +reiniciar(AireAcondicionado ac)
+  +simular(AireAcondicionado ac)
+  +obtenerNombreEstado() string
+  +obtenerDescripcion() string
+}
+
+class EstadoBase {
+  <<abstract>>
+  +encender(AireAcondicionado ac)
+  +apagar(AireAcondicionado ac)
+  +detectarTemperatura(AireAcondicionado ac)
+  +enfriar(AireAcondicionado ac)
+  +ventilar(AireAcondicionado ac)
+  +activarSleep(AireAcondicionado ac)
+  +activarAhorroEnergia(AireAcondicionado ac)
+  +manejarError(AireAcondicionado ac)
+  +mantenimiento(AireAcondicionado ac)
+  +reiniciar(AireAcondicionado ac)
+  +simular(AireAcondicionado ac)
+}
+
+class EstadoApagado
+class EstadoEncendido
+class EstadoDetectandoTemperatura
+class EstadoEnfriando
+class EstadoTemperaturaAlcanzada
+class EstadoVentilando
+class EstadoSleep
+class EstadoAhorroEnergia
+class EstadoErrorSensor
+class EstadoMantenimiento
+
+AireAcondicionado o-- EstadoAC : estadoActual
+AireAcondicionado ..> EstadoAC : delega acciones
+AireAcondicionado ..> EstadoApagado : crea
+AireAcondicionado ..> EstadoEncendido : crea
+AireAcondicionado ..> EstadoDetectandoTemperatura : crea
+AireAcondicionado ..> EstadoEnfriando : crea
+AireAcondicionado ..> EstadoTemperaturaAlcanzada : crea
+AireAcondicionado ..> EstadoVentilando : crea
+AireAcondicionado ..> EstadoSleep : crea
+AireAcondicionado ..> EstadoAhorroEnergia : crea
+AireAcondicionado ..> EstadoErrorSensor : crea
+AireAcondicionado ..> EstadoMantenimiento : crea
+
+EstadoAC <|.. EstadoBase
+EstadoBase <|-- EstadoApagado
+EstadoBase <|-- EstadoEncendido
+EstadoBase <|-- EstadoDetectandoTemperatura
+EstadoBase <|-- EstadoEnfriando
+EstadoBase <|-- EstadoTemperaturaAlcanzada
+EstadoBase <|-- EstadoVentilando
+EstadoBase <|-- EstadoSleep
+EstadoBase <|-- EstadoAhorroEnergia
+EstadoBase <|-- EstadoErrorSensor
+EstadoBase <|-- EstadoMantenimiento
+
+EstadoApagado ..> EstadoEncendido : encender()
+EstadoEncendido ..> EstadoDetectandoTemperatura : simular()
+EstadoDetectandoTemperatura ..> EstadoEnfriando : temperatura alta
+EstadoDetectandoTemperatura ..> EstadoTemperaturaAlcanzada : temperatura correcta
+EstadoDetectandoTemperatura ..> EstadoErrorSensor : falla sensor
+EstadoEnfriando ..> EstadoTemperaturaAlcanzada : objetivo alcanzado
+EstadoEnfriando ..> EstadoSleep : simular()
+EstadoEnfriando ..> EstadoAhorroEnergia : simular()
+EstadoTemperaturaAlcanzada ..> EstadoVentilando : simular()
+EstadoTemperaturaAlcanzada ..> EstadoEnfriando : sube temperatura
+EstadoVentilando ..> EstadoDetectandoTemperatura : simular()
+EstadoSleep ..> EstadoDetectandoTemperatura : temporizador
+EstadoAhorroEnergia ..> EstadoDetectandoTemperatura : revision periodica
+EstadoErrorSensor ..> EstadoMantenimiento : simular()
+EstadoMantenimiento ..> EstadoDetectandoTemperatura : reparado
+EstadoErrorSensor ..> EstadoApagado : apagar()
+EstadoMantenimiento ..> EstadoApagado : reiniciar()
